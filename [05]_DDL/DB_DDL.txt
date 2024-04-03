@@ -1,0 +1,174 @@
+CREATE TABLE `foods` (
+	`food_id` bigint NOT NULL,
+	`giver_id` bigint NOT NULL,
+	`reciever_id` bigint NOT NULL,
+	`category_id` bigint NOT NULL,
+	`status` bigint NOT NULL,
+	`title` varchar(100) NOT NULL,
+	`description` varchar(100) NOT NULL,
+	`location` varchar(250) NOT NULL,
+	`views` int NULL,
+	`likes` int NULL,
+	`make_by_date` timestamp NOT NULL,
+	`eat_by_date` timestamp NOT NULL,
+	`created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+	`updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+	PRIMARY KEY (`food_id`)
+);
+
+CREATE TABLE `users` (
+	`user_id` bigint NOT NULL,
+	`location` varchar(20),
+	`mobile_number` varchar(11) NULL,
+	`role` bigint NULL,
+	`nick_name` varchar(20) UNIQUE NOT NULL,
+	`profile_url` varchar(250) NULL,
+	`rating` int NULL,
+	`created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+	`updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+	PRIMARY KEY (`user_id`)
+);
+
+CREATE TABLE `trade_reviews` (
+	`review_id` bigint NOT NULL,
+	`food_id` bigint NOT NULL,
+	`receiver_id` bigint NOT NULL,
+	`giver_id` bigint NOT NULL,
+	`rating` int NULL,
+	`comment` varchar(500) NULL,
+	`created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+	`updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+	PRIMARY KEY (`review_id`)
+);
+
+CREATE TABLE `favorite_foods` (
+	`favorite_id` bigint NOT NULL,
+	`user_id` bigint NOT NULL,
+	`food_id` bigint NOT NULL,
+	`is_favorite` boolean NULL,
+	`created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+	`updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+	PRIMARY KEY (`favorite_id`)
+);
+
+CREATE TABLE `categories` (
+	`category_id` bigint NOT NULL,
+	`name` varchar(20) NULL,
+	`created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+	`updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+	PRIMARY KEY (`category_id`)
+);
+
+CREATE TABLE `food_images` (
+	`image_id` bigint NOT NULL,
+	`food_id` bigint NOT NULL,
+	`image_path` varchar(250) NULL,
+	`created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+	`updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+	PRIMARY KEY (`image_id`)
+);
+
+CREATE TABLE `spoon` (
+	`spoon_id` bigint NOT NULL,
+	`receiver_id` bigint NOT NULL,
+	`giver_id` bigint NOT NULL,
+	`score` int NULL,
+	`created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+	`updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+	PRIMARY KEY (`spoon_id`)
+);
+
+CREATE TABLE `notifications` (
+	`notification_id` bigint NOT NULL,
+	`user_id` bigint NOT NULL,
+	`type` int NULL,
+	`message` varchar(50) NULL,
+	`is_read` boolean NULL,
+	`is_sent` boolean NULL,
+	`created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+	PRIMARY KEY (`notification_id`)
+);
+
+ALTER TABLE `foods` ADD CONSTRAINT `FK_users_TO_foods_1` FOREIGN KEY (
+	`giver_id`
+)
+REFERENCES `users` (
+	`user_id`
+);
+
+ALTER TABLE `foods` ADD CONSTRAINT `FK_users_TO_foods_2` FOREIGN KEY (
+	`reciever_id`
+)
+REFERENCES `users` (
+	`user_id`
+);
+
+ALTER TABLE `foods` ADD CONSTRAINT `FK_categories_TO_foods_1` FOREIGN KEY (
+	`category_id`
+)
+REFERENCES `categories` (
+	`category_id`
+);
+
+ALTER TABLE `trade_reviews` ADD CONSTRAINT `FK_foods_TO_trade_reviews_1` FOREIGN KEY (
+	`food_id`
+)
+REFERENCES `foods` (
+	`food_id`
+);
+
+ALTER TABLE `trade_reviews` ADD CONSTRAINT `FK_users_TO_trade_reviews_1` FOREIGN KEY (
+	`giver_id`
+)
+REFERENCES `users` (
+	`user_id`
+);
+
+ALTER TABLE `trade_reviews` ADD CONSTRAINT `FK_users_TO_trade_reviews_2` FOREIGN KEY (
+	`receiver_id`
+)
+REFERENCES `users` (
+	`user_id`
+);
+
+ALTER TABLE `favorite_foods` ADD CONSTRAINT `FK_users_TO_favorite_foods_1` FOREIGN KEY (
+	`user_id`
+)
+REFERENCES `users` (
+	`user_id`
+);
+
+ALTER TABLE `favorite_foods` ADD CONSTRAINT `FK_foods_TO_favorite_foods_1` FOREIGN KEY (
+	`food_id`
+)
+REFERENCES `foods` (
+	`food_id`
+);
+
+ALTER TABLE `food_images` ADD CONSTRAINT `FK_foods_TO_food_images_1` FOREIGN KEY (
+	`food_id`
+)
+REFERENCES `foods` (
+	`food_id`
+);
+
+ALTER TABLE `spoon` ADD CONSTRAINT `FK_users_TO_spoon_1` FOREIGN KEY (
+	`receiver_id`
+)
+REFERENCES `users` (
+	`user_id`
+);
+
+ALTER TABLE `spoon` ADD CONSTRAINT `FK_users_TO_spoon_2` FOREIGN KEY (
+	`giver_id`
+)
+REFERENCES `users` (
+	`user_id`
+);
+
+ALTER TABLE `notifications` ADD CONSTRAINT `FK_users_TO_notifications_1` FOREIGN KEY (
+	`user_id`
+)
+REFERENCES `users` (
+	`user_id`
+);
